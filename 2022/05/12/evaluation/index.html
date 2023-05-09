@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="简介最近的工作中，设计到了车辆的基本性能评价。这里做一个简单的自动驾驶车辆评价总结。主要记录一下对车辆的评价中，有哪些评价项目，依据哪些性能评价指标进行判断。 为什么要评价目前正在开发的车辆简称为PS和FS。PS车辆处于最早期的开发阶段，FS车辆整体质量都会比PS车辆高。定期的通过对开发车辆进行一个定性评价，在车辆进行量产的阶段可以作为一个重要的参考，对upgrade和downgrade有一个把握">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于自动驾驶中的车辆评价总结">
+<meta property="og:url" content="http://zhiwango.com/2022/05/12/evaluation/index.html">
+<meta property="og:site_name" content="Zhi Wang">
+<meta property="og:description" content="简介最近的工作中，设计到了车辆的基本性能评价。这里做一个简单的自动驾驶车辆评价总结。主要记录一下对车辆的评价中，有哪些评价项目，依据哪些性能评价指标进行判断。 为什么要评价目前正在开发的车辆简称为PS和FS。PS车辆处于最早期的开发阶段，FS车辆整体质量都会比PS车辆高。定期的通过对开发车辆进行一个定性评价，在车辆进行量产的阶段可以作为一个重要的参考，对upgrade和downgrade有一个把握">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-05-12T00:07:13.000Z">
+<meta property="article:modified_time" content="2023-05-01T07:15:00.680Z">
+<meta property="article:author" content="Zhi Wang">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/bitbug_favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/main.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/main.png">
+        
+      
+    
+    <!-- title -->
+    <title>关于自动驾驶中的车辆评价总结</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/projects/">Projects</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2022/09/19/learn-docker/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2022/03/25/ros2-qos/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://zhiwango.com/2022/05/12/evaluation/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://zhiwango.com/2022/05/12/evaluation/&text=关于自动驾驶中的车辆评价总结"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://zhiwango.com/2022/05/12/evaluation/&title=关于自动驾驶中的车辆评价总结"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://zhiwango.com/2022/05/12/evaluation/&is_video=false&description=关于自动驾驶中的车辆评价总结"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=关于自动驾驶中的车辆评价总结&body=Check out this article: http://zhiwango.com/2022/05/12/evaluation/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://zhiwango.com/2022/05/12/evaluation/&title=关于自动驾驶中的车辆评价总结"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://zhiwango.com/2022/05/12/evaluation/&title=关于自动驾驶中的车辆评价总结"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://zhiwango.com/2022/05/12/evaluation/&title=关于自动驾驶中的车辆评价总结"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://zhiwango.com/2022/05/12/evaluation/&title=关于自动驾驶中的车辆评价总结"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://zhiwango.com/2022/05/12/evaluation/&name=关于自动驾驶中的车辆评价总结&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://zhiwango.com/2022/05/12/evaluation/&t=关于自动驾驶中的车辆评价总结"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B"><span class="toc-number">1.</span> <span class="toc-text">简介</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E8%AF%84%E4%BB%B7"><span class="toc-number">2.</span> <span class="toc-text">为什么要评价</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%AF%84%E4%BB%B7%E9%A1%B9%E7%9B%AE"><span class="toc-number">3.</span> <span class="toc-text">评价项目</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%95%E7%8B%AC%E8%A1%8C%E9%A9%B6"><span class="toc-number">3.1.</span> <span class="toc-text">单独行驶</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%91%E8%BD%A6"><span class="toc-number">3.1.1.</span> <span class="toc-text">发车</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8C%80%E9%80%9F%E8%A1%8C%E9%A9%B6"><span class="toc-number">3.1.2.</span> <span class="toc-text">匀速行驶</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%A0%E5%BC%AF%E9%81%93%E8%A1%8C%E9%A9%B6"><span class="toc-number">3.1.3.</span> <span class="toc-text">无弯道行驶</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%B4%E8%A7%92%E5%BC%AF%E9%81%93%E8%A1%8C%E9%A9%B6"><span class="toc-number">3.1.4.</span> <span class="toc-text">直角弯道行驶</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%AF%E9%81%93%E8%A1%8C%E9%A9%B6"><span class="toc-number">3.1.5.</span> <span class="toc-text">弯道行驶</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%81%9C%E8%BD%A6"><span class="toc-number">3.1.6.</span> <span class="toc-text">停车</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%BD%E8%B8%AA%E8%A1%8C%E9%A9%B6"><span class="toc-number">3.2.</span> <span class="toc-text">追踪行驶</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%91%E8%BD%A6-1"><span class="toc-number">3.2.1.</span> <span class="toc-text">发车</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8C%80%E9%80%9F%E8%A1%8C%E9%A9%B6-1"><span class="toc-number">3.2.2.</span> <span class="toc-text">匀速行驶</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%A0%E5%BC%AF%E9%81%93%E8%A1%8C%E9%A9%B6-1"><span class="toc-number">3.2.3.</span> <span class="toc-text">无弯道行驶</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%B4%E8%A7%92%E5%BC%AF%E9%81%93%E8%A1%8C%E9%A9%B6-1"><span class="toc-number">3.2.4.</span> <span class="toc-text">直角弯道行驶</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%AF%E9%81%93%E8%A1%8C%E9%A9%B6-1"><span class="toc-number">3.2.5.</span> <span class="toc-text">弯道行驶</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%81%9C%E8%BD%A6-1"><span class="toc-number">3.2.6.</span> <span class="toc-text">停车</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9A%9C%E5%AE%B3%E7%89%A9%E5%81%9C%E6%AD%A2"><span class="toc-number">3.3.</span> <span class="toc-text">障害物停止</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%B4%E7%BA%BF"><span class="toc-number">3.3.1.</span> <span class="toc-text">直线</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">4.</span> <span class="toc-text">总结</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        关于自动驾驶中的车辆评价总结
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Zhi Wang</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-05-12T00:07:13.000Z" itemprop="datePublished">2022-05-12</time>
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>最近的工作中，设计到了车辆的基本性能评价。这里做一个简单的自动驾驶车辆评价总结。<br>主要记录一下对车辆的评价中，有哪些<strong>评价项目</strong>，依据哪些性能<strong>评价指标</strong>进行判断。</p>
+<h1 id="为什么要评价"><a href="#为什么要评价" class="headerlink" title="为什么要评价"></a>为什么要评价</h1><p>目前正在开发的车辆简称为PS和FS。PS车辆处于最早期的开发阶段，FS车辆整体质量都会比PS车辆高。<br>定期的通过对开发车辆进行一个定性评价，在车辆进行量产的阶段可以作为一个重要的参考，对upgrade和downgrade有一个把握，是一个保证产品质量的方法。</p>
+<blockquote>
+<p>PS: Prototype Study 原型研究<br>FS: Feasibility Study 可行性研究</p>
+</blockquote>
+<h1 id="评价项目"><a href="#评价项目" class="headerlink" title="评价项目"></a>评价项目</h1><p>OME业界中经常说空车状态，标准乘车状态2人，满员乘车状态。在评价工作，也需要对车辆的重量限制，这里简写为Min, Mid, Max三种状态。数据取得次数通常在2次以上。</p>
+<h2 id="单独行驶"><a href="#单独行驶" class="headerlink" title="单独行驶"></a>单独行驶</h2><h3 id="发车"><a href="#发车" class="headerlink" title="发车"></a>发车</h3><table>
+    <tr>
+        <td style="white-space: nowrap"><b>行驶条件</b></td>
+        <td style="white-space: nowrap"><b>初期车速(km/h)</b></td>
+        <td style="white-space: nowrap"><b>目标车速(km/h)</b></td>
+        <td style="white-space: nowrap"><b>评价项目</b></td>
+    </tr>
+    <tr>
+        <td>加速</td>
+        <td>0</td>
+        <td>5, 10, 20</td>
+        <td>车速误差:1km/h以下(Over Shoot不可)<br>加速应答时间:3.7sec以下(到达0.3m/s^2)<br>最大加速度:1.0m/s^2<br>最大jerk:0.3m/s^3<br>客观评价:乘客座舱没有不舒服的感觉<br>客观评价注意点:加速(绝对值，jerk，延迟)，OverShoot，振动</td>
+    </tr>
+</table>
+
+
+<h3 id="匀速行驶"><a href="#匀速行驶" class="headerlink" title="匀速行驶"></a>匀速行驶</h3><table>
+    <tr>
+        <td style="white-space: nowrap"><b>行驶条件</b></td>
+        <td style="white-space: nowrap"><b>初期车速(km/h)</b></td>
+        <td style="white-space: nowrap"><b>目标车速(km/h)</b></td>
+        <td style="white-space: nowrap"><b>评价项目</b></td>
+    </tr>
+    <tr>
+        <td>匀速</td>
+        <td style="white-space: nowrap">3, 5, 10, 20</td>
+        <td style="white-space: nowrap">3, 5, 10, 20</td>
+        <td>车速误差:1km/h<br>车速变动振幅:1km/h以下(P-P)<br>车速变动周期:0.1Hz以上(P-P)<br>纵向加速度:0.5m/s^2以下<br>横向加速度:0m/s^2<br>:客观评价:乘客座舱没有不舒服的感觉<<br>客观评价注意点:车速维持性能，振动</td>
+    </tr>
+</table>
+
+
+<h3 id="无弯道行驶"><a href="#无弯道行驶" class="headerlink" title="无弯道行驶"></a>无弯道行驶</h3><table>
+    <tr>
+        <td style="white-space: nowrap"><b>行驶条件</b></td>
+        <td style="white-space: nowrap"><b>初期车速(km/h)</b></td>
+        <td style="white-space: nowrap"><b>目标车速(km/h)</b></td>
+        <td style="white-space: nowrap"><b>评价项目</b></td>
+    </tr>
+    <tr>
+        <td>加速</td>
+        <td>5</td>
+        <td>10, 20</td>
+        <td rowspan="3">横向位置误差:±0.15m以内占90%以上、±0.20m以内占99%以上<br>客观评价:乘客座舱没有不舒服的感觉<br>客观评价注意点:汽车没有横向摇晃</td>
+    </tr>
+    <tr>
+        <td>匀速</td>
+        <td>3, 5</td>
+        <td>3, 5</td>
+    </tr>
+    <tr>
+        <td>減速</td>
+        <td>10, 20</td>
+        <td>5</td>
+    </tr>
+</table>
+
+<h3 id="直角弯道行驶"><a href="#直角弯道行驶" class="headerlink" title="直角弯道行驶"></a>直角弯道行驶</h3><table>
+    <tr>
+        <td style="white-space: nowrap"><b>行驶条件</b></td>
+        <td style="white-space: nowrap"><b>初期车速(km/h)</b></td>
+        <td style="white-space: nowrap"><b>目标车速(km/h)</b></td>
+        <td style="white-space: nowrap"><b>评价项目</b></td>
+    </tr>
+    <tr>
+        <td>加速</td>
+        <td>5</td>
+        <td>10, 20</td>
+        <td rowspan="3">横向位置误差:±0.15m以内占90%以上、±0.20m以内占99%以上<br>客观评价:乘客座舱没有不舒服的感觉<br>客观评价注意点:弯道中的横向加速度G变动的大小，方向打的快慢及是否有唐突感</td>
+    </tr>
+    <tr>
+        <td>匀速</td>
+        <td>3, 5</td>
+        <td>3, 5</td>
+    </tr>
+    <tr>
+        <td>減速</td>
+        <td>10, 20</td>
+        <td>5</td>
+    </tr>
+</table>
+
+
+<h3 id="弯道行驶"><a href="#弯道行驶" class="headerlink" title="弯道行驶"></a>弯道行驶</h3><table>
+    <tr>
+        <td style="white-space: nowrap"><b>行驶条件</b></td>
+        <td style="white-space: nowrap"><b>初期车速(km/h)</b></td>
+        <td style="white-space: nowrap"><b>目标车速(km/h)</b></td>
+        <td style="white-space: nowrap"><b>评价项目</b></td>
+    </tr>
+    <tr>
+        <td>匀速</td>
+        <td>7, 11</td>
+        <td>7, 11</td>
+        <td>横向位置误差:±0.15m以内占90%以上、±0.20m以内占99%以上<br>加速度G的变化:減速G→横向G→加速G可以平滑的连接<br>客观评价:乘客座舱没有不舒服的感觉<br>客观评价注意点:弯道中的横向加速度G变动的大小，方向打的快慢及是否有唐突感</td>
+    </tr>
+</table>
+
+
+<h3 id="停车"><a href="#停车" class="headerlink" title="停车"></a>停车</h3><table>
+    <tr>
+        <td style="white-space: nowrap"><b>行驶条件</b></td>
+        <td style="white-space: nowrap"><b>初期车速(km/h)</b></td>
+        <td style="white-space: nowrap"><b>目标车速(km/h)</b></td>
+        <td style="white-space: nowrap"><b>评价项目</b></td>
+    </tr>
+    <tr>
+        <td>減速</td>
+        <td style="white-space: nowrap">5, 10, 20</td>
+        <td>0</td>
+        <td>车辆没有碰撞到停留地点<br>最大加速度:-1.0m/s^2<br>最大jerk:0.3m/s^3<br>停止精度:停留地点到车辆下车口纵向±50cm、横向5〜15cm以内<br>客观评价:乘客座舱没有不舒服的感觉<br>客观评价注意点:汽车停止过程中G的变化大小、減速过程中减速度G是否突然消失、是否2段停止、刹车音是否过大、停车位置</td>
+    </tr>
+</table>
+
+ 
+<h2 id="追踪行驶"><a href="#追踪行驶" class="headerlink" title="追踪行驶"></a>追踪行驶</h2><h3 id="发车-1"><a href="#发车-1" class="headerlink" title="发车"></a>发车</h3><table>
+    <tr>
+        <td style="white-space: nowrap"><b>行驶条件</b></td>
+        <td style="white-space: nowrap"><b>Ego车速(km/h)</b></td>
+        <td style="white-space: nowrap"><b>Target车速(km/h)</b></td>
+        <td style="white-space: nowrap"><b>加速度(m/s^2)</b></td>
+        <td style="white-space: nowrap"><b>评价项目</b></td>
+    </tr>
+    <tr>
+        <td>加速</td>
+        <td>初期车速:0<br>设定车速:20</td>
+        <td>初期车速:0<br>设定车速:5, 10, 20</td>
+        <td>1.0<br>1.5</td>
+        <td>车速误差:1km/h以下(OverShoot不可)<br>加速应答时间:3.7sec以下(到达0.3m/s^2)<br>最大加速度:1.0m/s^2<br>最大jerk:0.3m/s^3<br>客观评价:乘客座舱没有不舒服的感觉<br>客观评价注意点:加速度感(绝对值，jerk，迟延)，OverShoot，振动</td>
+    </tr>
+</table>
+
+<h3 id="匀速行驶-1"><a href="#匀速行驶-1" class="headerlink" title="匀速行驶"></a>匀速行驶</h3><table>
+    <tr>
+        <td style="white-space: nowrap"><b>行驶条件</b></td>
+        <td style="white-space: nowrap"><b>Ego车速(km/h)</b></td>
+        <td style="white-space: nowrap"><b>Target车速(km/h)</b></td>
+        <td style="white-space: nowrap"><b>加速度(m/s^2)</b></td>
+        <td style="white-space: nowrap"><b>评价项目</b></td>
+    </tr>
+    <tr>
+        <td>匀速</td>
+        <td>初期车速:0<br>设定车速:20</td>
+        <td>设定车速:20</td>
+        <td>0.0</td>
+        <td>车速误差:1km/h<br>车速变动振幅:1km/h以下(P-P)<br>车速变动周期:0.1Hz以上(P-P)<br>纵向加速度:0.5m/s^2以下<br>横向加速度:0m/s^2<br>客观评价:乘客座舱没有不舒服的感觉<br>客观评价注意点:车速维持性能，振动</td>
+    </tr>
+</table>
+
+<h3 id="无弯道行驶-1"><a href="#无弯道行驶-1" class="headerlink" title="无弯道行驶"></a>无弯道行驶</h3><table>
+    <tr>
+        <td style="white-space: nowrap"><b>行驶条件</b></td>
+        <td style="white-space: nowrap"><b>Ego车速(km/h)</b></td>
+        <td style="white-space: nowrap"><b>Target车速(km/h)</b></td>
+        <td style="white-space: nowrap"><b>加速度(m/s^2)</b></td>
+        <td style="white-space: nowrap"><b>评价项目</b></td>
+    </tr>
+    <tr>
+        <td>加速</td>
+        <td>初期车速:0<br>设定车速:20</td>
+        <td>设定车速:5<br>方向盘操作结束时:10, 20</td>
+        <td>1.0</td>
+        <td rowspan="3">横向位置误差:±0.15m以内占90%以上、±0.20m以内占99%以上<br>客观评价:乘客座舱没有不舒服的感觉<br>客观评价注意点:车辆没有左右摇晃</td>
+    </tr>
+    <tr>
+        <td>匀速</td>
+        <td>初期车速:0<br>设定车速:20</td>
+        <td>设定车速:3, 5</td>
+        <td>0.0</td>
+    </tr>
+    <tr>
+        <td>減速</td>
+        <td>初期车速:0<br>设定车速:20</td>
+        <td>初期车速:10, 20<br>方向盘操作结束时:5</td>
+        <td>-1.0</td>
+    </tr>
+</table>
+
+<h3 id="直角弯道行驶-1"><a href="#直角弯道行驶-1" class="headerlink" title="直角弯道行驶"></a>直角弯道行驶</h3><table>
+    <tr>
+        <td style="white-space: nowrap"><b>行驶条件</b></td>
+        <td style="white-space: nowrap"><b>Ego车速(km/h)</b></td>
+        <td style="white-space: nowrap"><b>Target车速(km/h)</b></td>
+        <td style="white-space: nowrap"><b>加速度(m/s^2)</b></td>
+        <td style="white-space: nowrap"><b>評価评价项目項目</b></td>
+    </tr>
+    <tr>
+        <td>加速</td>
+        <td>初期车速:0<br>设定车速:20</td>
+        <td>初期车速:5<br>方向盘操作结束时:10, 20</td>
+        <td>1.0</td>
+        <td rowspan="3">横向位置误差:±0.15m以内占90%以上、±0.20m以内占99%以上<br>客观评价:乘客座舱没有不舒服的感觉<br>客观评价注意点:失去追踪目标车辆后、单独行驶时的加速感、(弯道中的横向加速度G变动的大小，方向打的快慢及是否有唐突感)</td>
+    </tr>
+    <tr>
+        <td>匀速</td>
+        <td>初期车速:0<br>设定车速:20</td>
+        <td>设定车速:3, 5</td>
+        <td>0.0</td>
+    </tr>
+    <tr>
+        <td>減速</td>
+        <td>初期车速:0<br>设定车速:20</td>
+        <td>初期车速:10, 20<br>方向盘操作结束时:5</td>
+        <td>-1.0</td>
+    </tr>
+</table>
+
+<h3 id="弯道行驶-1"><a href="#弯道行驶-1" class="headerlink" title="弯道行驶"></a>弯道行驶</h3><table>
+    <tr>
+        <td style="white-space: nowrap"><b>行驶条件</b></td>
+        <td style="white-space: nowrap"><b>Ego车速(km/h)</b></td>
+        <td style="white-space: nowrap"><b>Target车速(km/h)</b></td>
+        <td style="white-space: nowrap"><b>加速度(m/s^2)</b></td>
+        <td style="white-space: nowrap"><b>车辆重量</b></td>
+        <td style="white-space: nowrap"><b>评价项目</b></td>
+    </tr>
+    <tr>
+        <td>匀速</td>
+        <td>初期车速:0<br>设定车速:20</td>
+        <td>设定车速:7, 11</td>
+        <td>0.0</td>
+        <td>左/右偏移</td>
+        <td>横向位置误差:±0.15m以内占90%以上、±0.20m以内占99%以上<br>加速度G的变化:減速G→横向G→加速G可以平滑的连接<br>客观评价:乘客座舱没有不舒服的感觉<br>客观评价注意点:失去追踪目标车辆后、单独行驶时的加速感、(弯道中的横向加速度G变动的大小，方向打的快慢及是否有唐突感)</td>
+    </tr>
+</table>
+
+<h3 id="停车-1"><a href="#停车-1" class="headerlink" title="停车"></a>停车</h3><table>
+    <tr>
+        <td style="white-space: nowrap"><b>行驶条件</b></td>
+        <td style="white-space: nowrap"><b>Ego车速(km/h)</b></td>
+        <td style="white-space: nowrap"><b>Target车速(km/h)</b></td>
+        <td style="white-space: nowrap"><b>加速度(m/s^2)</b></td>
+        <td style="white-space: nowrap"><b>评价项目</b></td>
+    </tr>
+    <tr>
+        <td>加速</td>
+        <td>初期车速:0<br>设定车速:20</td>
+        <td style="white-space: nowrap">初期车速:5, 10, 20<br>设定车速:0</td>
+        <td>-0.5<br>-1.0</td>
+        <td>车辆没有碰撞到停留地点<br>最大加速度:-1.0m/s^2<br>最大jerk:0.3m/s^3<br>停止精度:停留地点到车辆出口纵向误差±50cm、横向误差5〜15cm以内<br>客观评价:乘客座舱没有不舒服的感觉<br>客观评价注意点:加速度G的变化，減速过程中、舰速度G是否突然消失，停车过程中是否2段停止、刹车音、停止后到目标车辆的距离</td>
+    </tr>
+</table>
+
+
+
+
+<h2 id="障害物停止"><a href="#障害物停止" class="headerlink" title="障害物停止"></a>障害物停止</h2><h3 id="直线"><a href="#直线" class="headerlink" title="直线"></a>直线</h3><table>
+    <tr>
+        <td style="white-space: nowrap"><b>Ego车状态</b></td>
+        <td style="white-space: nowrap"><b>障碍物状态</b></td>
+        <td style="white-space: nowrap"><b>评价项目</b></td>
+    </tr>
+    <tr>
+        <td style="white-space: nowrap">初期车速km/h:5, 10, 20<br>初期加速度m/s^2:0.0</td>
+        <td>种类:行人<br>行为:静止<br>初期横向位置:车道中央<br>初期纵向位置:车辆前方到障碍物的距离15m, 25m, 50m</td>
+        <td>通过平缓的减速度停车<br>停止距离:障害物の5.0~6.0m停止(识别误差0.5m+控制误差0.5m)<br>最大加速度:-1.0m/s^2<br>最大jerk:±0.3m/s^3<br>客观评价:乘客座舱没有不舒服的感觉<br>客观评价注意点:加速度G的变化，減速过程中、舰速度G是否突然消失，停车过程中是否2段停止、刹车音、停止后到目标车辆的距离</td>
+    </tr>
+</table>
+
+
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1>
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/projects/">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B"><span class="toc-number">1.</span> <span class="toc-text">简介</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E8%AF%84%E4%BB%B7"><span class="toc-number">2.</span> <span class="toc-text">为什么要评价</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%AF%84%E4%BB%B7%E9%A1%B9%E7%9B%AE"><span class="toc-number">3.</span> <span class="toc-text">评价项目</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%95%E7%8B%AC%E8%A1%8C%E9%A9%B6"><span class="toc-number">3.1.</span> <span class="toc-text">单独行驶</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%91%E8%BD%A6"><span class="toc-number">3.1.1.</span> <span class="toc-text">发车</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8C%80%E9%80%9F%E8%A1%8C%E9%A9%B6"><span class="toc-number">3.1.2.</span> <span class="toc-text">匀速行驶</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%A0%E5%BC%AF%E9%81%93%E8%A1%8C%E9%A9%B6"><span class="toc-number">3.1.3.</span> <span class="toc-text">无弯道行驶</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%B4%E8%A7%92%E5%BC%AF%E9%81%93%E8%A1%8C%E9%A9%B6"><span class="toc-number">3.1.4.</span> <span class="toc-text">直角弯道行驶</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%AF%E9%81%93%E8%A1%8C%E9%A9%B6"><span class="toc-number">3.1.5.</span> <span class="toc-text">弯道行驶</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%81%9C%E8%BD%A6"><span class="toc-number">3.1.6.</span> <span class="toc-text">停车</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%BD%E8%B8%AA%E8%A1%8C%E9%A9%B6"><span class="toc-number">3.2.</span> <span class="toc-text">追踪行驶</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%91%E8%BD%A6-1"><span class="toc-number">3.2.1.</span> <span class="toc-text">发车</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8C%80%E9%80%9F%E8%A1%8C%E9%A9%B6-1"><span class="toc-number">3.2.2.</span> <span class="toc-text">匀速行驶</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%A0%E5%BC%AF%E9%81%93%E8%A1%8C%E9%A9%B6-1"><span class="toc-number">3.2.3.</span> <span class="toc-text">无弯道行驶</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%B4%E8%A7%92%E5%BC%AF%E9%81%93%E8%A1%8C%E9%A9%B6-1"><span class="toc-number">3.2.4.</span> <span class="toc-text">直角弯道行驶</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%AF%E9%81%93%E8%A1%8C%E9%A9%B6-1"><span class="toc-number">3.2.5.</span> <span class="toc-text">弯道行驶</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%81%9C%E8%BD%A6-1"><span class="toc-number">3.2.6.</span> <span class="toc-text">停车</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9A%9C%E5%AE%B3%E7%89%A9%E5%81%9C%E6%AD%A2"><span class="toc-number">3.3.</span> <span class="toc-text">障害物停止</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%B4%E7%BA%BF"><span class="toc-number">3.3.1.</span> <span class="toc-text">直线</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">4.</span> <span class="toc-text">总结</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://zhiwango.com/2022/05/12/evaluation/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://zhiwango.com/2022/05/12/evaluation/&text=关于自动驾驶中的车辆评价总结"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://zhiwango.com/2022/05/12/evaluation/&title=关于自动驾驶中的车辆评价总结"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://zhiwango.com/2022/05/12/evaluation/&is_video=false&description=关于自动驾驶中的车辆评价总结"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=关于自动驾驶中的车辆评价总结&body=Check out this article: http://zhiwango.com/2022/05/12/evaluation/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://zhiwango.com/2022/05/12/evaluation/&title=关于自动驾驶中的车辆评价总结"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://zhiwango.com/2022/05/12/evaluation/&title=关于自动驾驶中的车辆评价总结"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://zhiwango.com/2022/05/12/evaluation/&title=关于自动驾驶中的车辆评价总结"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://zhiwango.com/2022/05/12/evaluation/&title=关于自动驾驶中的车辆评价总结"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://zhiwango.com/2022/05/12/evaluation/&name=关于自动驾驶中的车辆评价总结&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://zhiwango.com/2022/05/12/evaluation/&t=关于自动驾驶中的车辆评价总结"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2023
+    Zhi Wang
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/projects/">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
